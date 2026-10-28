@@ -1,0 +1,254 @@
+{
+  "entities": {
+    "FacialProfile": {
+      "title": "FacialProfile",
+      "description": "Stores enrolled employee identity details and normalized cloud facial biometric traits for cross-device recognition.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Authenticated user UID who owns or enrolled this record.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full legal or display name of the enrolled person.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "employeeCode": {
+          "type": "string",
+          "description": "Unique employee or member identifier badge code.",
+          "minLength": 2,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Assigned organizational branch or campus location.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "roleTitle": {
+          "type": "string",
+          "description": "Job title or department role.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "traitSignature": {
+          "type": "string",
+          "description": "Serialized normalized 64-point facial feature vector for biometric cosine matching.",
+          "minLength": 16,
+          "maxLength": 2048
+        },
+        "interocularRatio": {
+          "type": "number",
+          "description": "Normalized interocular distance to facial width ratio."
+        },
+        "symmetryScore": {
+          "type": "number",
+          "description": "Biometric bilateral facial symmetry score from 0 to 100."
+        },
+        "descriptorHash": {
+          "type": "string",
+          "description": "Hexadecimal checksum of the facial trait vector.",
+          "minLength": 8,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current enrollment status of the facial profile.",
+          "enum": ["active", "suspended", "archived"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the facial profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the facial profile was last updated."
+        }
+      },
+      "required": [
+        "ownerId",
+        "fullName",
+        "employeeCode",
+        "branch",
+        "roleTitle",
+        "traitSignature",
+        "interocularRatio",
+        "symmetryScore",
+        "descriptorHash",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AttendanceLog": {
+      "title": "AttendanceLog",
+      "description": "Records a verified facial recognition attendance check-in with timestamp, branch, biometric confidence, and GPS geolocation.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "Authenticated user UID who recorded this attendance log.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "profileId": {
+          "type": "string",
+          "description": "Document ID of the matched FacialProfile.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the person whose attendance was recorded.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "employeeCode": {
+          "type": "string",
+          "description": "Employee badge code at time of check-in.",
+          "minLength": 2,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Branch associated with the attendance record.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "attendanceStatus": {
+          "type": "string",
+          "description": "Recorded attendance classification.",
+          "enum": ["present", "late", "on_leave", "revoked"]
+        },
+        "verificationMethod": {
+          "type": "string",
+          "description": "Method used to verify attendance.",
+          "enum": ["facial_biometric", "manual_admin_override"]
+        },
+        "matchConfidence": {
+          "type": "number",
+          "description": "Biometric facial similarity confidence score (0 to 100)."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "GPS latitude coordinate where attendance was captured (-90 to 90)."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "GPS longitude coordinate where attendance was captured (-180 to 180)."
+        },
+        "locationName": {
+          "type": "string",
+          "description": "Resolved location description and coordinate summary.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "monthKey": {
+          "type": "string",
+          "description": "Year-month partition string (YYYY-MM) for monthly report aggregation.",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "dateKey": {
+          "type": "string",
+          "description": "ISO calendar date string (YYYY-MM-DD).",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "timeLabel": {
+          "type": "string",
+          "description": "Formatted local time of check-in.",
+          "minLength": 4,
+          "maxLength": 20
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Immutable server timestamp when attendance was logged."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the latest record modification."
+        }
+      },
+      "required": [
+        "ownerId",
+        "profileId",
+        "fullName",
+        "employeeCode",
+        "branch",
+        "attendanceStatus",
+        "verificationMethod",
+        "matchConfidence",
+        "latitude",
+        "longitude",
+        "locationName",
+        "monthKey",
+        "dateKey",
+        "timeLabel",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted administrator registry document keyed by user UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the administrator.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "role": {
+          "type": "string",
+          "description": "Administrator role designation.",
+          "enum": ["admin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when admin privilege was granted."
+        }
+      },
+      "required": ["uid", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/facialProfiles/{profileId}": {
+      "schema": {
+        "$ref": "#/entities/FacialProfile"
+      },
+      "description": "Cloud store of enrolled user facial biometric traits and identity metadata."
+    },
+    "/attendanceLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/AttendanceLog"
+      },
+      "description": "Real-time facial recognition attendance records with geolocation coordinates."
+    },
+    "/admins/{adminUid}": {
+      "schema": {
+        "$ref": "#/entities/AdminRecord"
+      },
+      "description": "Registry of administrator UIDs used by security rules for elevated access."
+    }
+  }
+}

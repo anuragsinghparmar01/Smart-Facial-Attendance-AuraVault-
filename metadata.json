@@ -1,0 +1,11 @@
+{
+  "name": "AuraVault Biometric Attendance & Telemetry Suite",
+  "description": "Cloud-synchronized facial recognition attendance system with real-time biometric trait matching, geolocation verification, executive monthly report generation, and administrative control.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

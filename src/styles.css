@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  /* Light Theme: Warm Cream Beige (60%), Muted Sage Grey (30%), Deep Burgundy (10%) */
+  --bg-canvas: #F6F2EA;
+  --bg-surface: #EFE9DD;
+  --bg-elevated: #FAF7F2;
+  --bg-sage-subtle: #E2E7E3;
+  --border-subtle: #D8D1C5;
+  --border-sage: #BCC6C0;
+  --text-primary: #1E191B;
+  --text-secondary: #525E58;
+  --text-muted: #6E7B74;
+  --accent-burgundy: #5E1928;
+  --accent-burgundy-hover: #47111D;
+  --accent-burgundy-soft: #F2E4E7;
+  --accent-sage: #5C6B64;
+  --accent-gold: #8C6D3B;
+  --status-present: #1E6042;
+  --status-late: #9A5B13;
+  --status-error: #8F1D2C;
+}
+
+.royal-dark {
+  /* Royal Dark Mode: Deep Velvet Obsidian, Luminous Sage Silver, Royal Crimson Burgundy & Champagne Gold */
+  --bg-canvas: #110E12;
+  --bg-surface: #1A151C;
+  --bg-elevated: #221B25;
+  --bg-sage-subtle: #1D2421;
+  --border-subtle: #312735;
+  --border-sage: #36423D;
+  --text-primary: #F5EFE6;
+  --text-secondary: #B4C2BB;
+  --text-muted: #84948C;
+  --accent-burgundy: #9E2A42;
+  --accent-burgundy-hover: #B8334F;
+  --accent-burgundy-soft: #2D151C;
+  --accent-sage: #7A8F85;
+  --accent-gold: #D4AF37;
+  --status-present: #34D399;
+  --status-late: #FBBF24;
+  --status-error: #F87171;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1), color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans-ui {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-mono-tabular {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
