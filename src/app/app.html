@@ -1,5 +1,5 @@
 <div class="min-h-screen flex flex-col">
-  <!-- SIMPLE TOP BAR (3 Zones: App Title | 3 Easy Links | Dark Mode + Small Face Icon for Admin) -->
+  <!-- SIMPLE TOP BAR (3 Zones: App Title | 3 Easy Buttons | Dark Mode + Small Face Icon for Admin) -->
   <header
     class="no-print sticky top-0 z-30 flex items-center justify-between gap-4 sm:gap-8 px-4 sm:px-8 py-3.5 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]/95 backdrop-blur-md"
   >
@@ -12,40 +12,40 @@
       Face Attendance
     </a>
 
-    <!-- Zone 2: Simple, Child-Friendly Navigation Links -->
-    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-[var(--text-secondary)]">
+    <!-- Zone 2: Simple, Child-Friendly Navigation Buttons -->
+    <nav class="hidden md:flex items-center gap-3 text-sm font-medium text-[var(--text-secondary)]">
       <button
         type="button"
         (click)="switchTab('scanner')"
-        class="py-1 transition-colors whitespace-nowrap shrink-0 border-b-2"
-        [class.border-[var(--accent-burgundy)]]="activeTab() === 'scanner'"
-        [class.text-[var(--text-primary)]]="activeTab() === 'scanner'"
-        [class.font-semibold]="activeTab() === 'scanner'"
-        [class.border-transparent]="activeTab() !== 'scanner'"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0"
+        [class.btn-burgundy]="activeTab() === 'scanner'"
+        [class.vault-surface]="activeTab() !== 'scanner'"
+        [class.text-[var(--text-primary)]]="activeTab() !== 'scanner'"
       >
-        Mark Attendance
+        <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">center_focus_strong</mat-icon>
+        <span>Mark Attendance</span>
       </button>
       <button
         type="button"
         (click)="switchTab('enroll')"
-        class="py-1 transition-colors whitespace-nowrap shrink-0 border-b-2"
-        [class.border-[var(--accent-burgundy)]]="activeTab() === 'enroll'"
-        [class.text-[var(--text-primary)]]="activeTab() === 'enroll'"
-        [class.font-semibold]="activeTab() === 'enroll'"
-        [class.border-transparent]="activeTab() !== 'enroll'"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0"
+        [class.btn-burgundy]="activeTab() === 'enroll'"
+        [class.vault-surface]="activeTab() !== 'enroll'"
+        [class.text-[var(--text-primary)]]="activeTab() !== 'enroll'"
       >
-        Add New Person
+        <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">person_add</mat-icon>
+        <span>Add New Person</span>
       </button>
       <button
         type="button"
         (click)="switchTab('reports')"
-        class="py-1 transition-colors whitespace-nowrap shrink-0 border-b-2"
-        [class.border-[var(--accent-burgundy)]]="activeTab() === 'reports'"
-        [class.text-[var(--text-primary)]]="activeTab() === 'reports'"
-        [class.font-semibold]="activeTab() === 'reports'"
-        [class.border-transparent]="activeTab() !== 'reports'"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg whitespace-nowrap shrink-0"
+        [class.btn-burgundy]="activeTab() === 'reports'"
+        [class.vault-surface]="activeTab() !== 'reports'"
+        [class.text-[var(--text-primary)]]="activeTab() !== 'reports'"
       >
-        Monthly Report
+        <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">assessment</mat-icon>
+        <span>Monthly Report</span>
       </button>
     </nav>
 
@@ -54,7 +54,7 @@
       <button
         type="button"
         (click)="toggleRoyalDark()"
-        class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-[var(--border-sage)] bg-[var(--bg-sage-subtle)] text-[var(--text-primary)] hover:opacity-90 transition-opacity whitespace-nowrap shrink-0"
+        class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border border-[var(--border-sage)] bg-[var(--bg-sage-subtle)] text-[var(--text-primary)] whitespace-nowrap shrink-0"
       >
         <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">{{
           isRoyalDark() ? 'light_mode' : 'dark_mode'
@@ -68,7 +68,7 @@
         (click)="switchTab('admin')"
         title="Admin Login (Password: 123456)"
         aria-label="Open Admin Panel"
-        class="w-9 h-9 rounded-full flex items-center justify-center transition-all border shrink-0"
+        class="w-9 h-9 rounded-full flex items-center justify-center border shrink-0"
         [class.btn-burgundy]="activeTab() === 'admin' || store.isAdminUnlocked()"
         [class.border-[var(--border-subtle)]]="activeTab() !== 'admin' && !store.isAdminUnlocked()"
         [class.bg-[var(--bg-surface)]]="activeTab() !== 'admin' && !store.isAdminUnlocked()"
@@ -83,33 +83,39 @@
   <div
     class="no-print md:hidden flex items-center justify-between gap-2 px-4 py-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]"
   >
-    <div class="flex items-center gap-1.5 overflow-x-auto">
+    <div class="flex items-center gap-2 overflow-x-auto py-1">
       <button
         type="button"
         (click)="switchTab('scanner')"
-        class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
+        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
         [class.btn-burgundy]="activeTab() === 'scanner'"
+        [class.vault-card]="activeTab() !== 'scanner'"
         [class.text-[var(--text-secondary)]]="activeTab() !== 'scanner'"
       >
-        Mark Attendance
+        <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">center_focus_strong</mat-icon>
+        <span>Mark Attendance</span>
       </button>
       <button
         type="button"
         (click)="switchTab('enroll')"
-        class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
+        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
         [class.btn-burgundy]="activeTab() === 'enroll'"
+        [class.vault-card]="activeTab() !== 'enroll'"
         [class.text-[var(--text-secondary)]]="activeTab() !== 'enroll'"
       >
-        Add New Person
+        <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">person_add</mat-icon>
+        <span>Add New Person</span>
       </button>
       <button
         type="button"
         (click)="switchTab('reports')"
-        class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
+        class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap shrink-0"
         [class.btn-burgundy]="activeTab() === 'reports'"
+        [class.vault-card]="activeTab() !== 'reports'"
         [class.text-[var(--text-secondary)]]="activeTab() !== 'reports'"
       >
-        Monthly Report
+        <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">assessment</mat-icon>
+        <span>Monthly Report</span>
       </button>
     </div>
   </div>
@@ -139,7 +145,7 @@
         <button
           type="button"
           (click)="store.clearBanner()"
-          class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] whitespace-nowrap shrink-0"
+          class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md vault-surface text-[var(--text-secondary)] hover:text-[var(--text-primary)] whitespace-nowrap shrink-0"
         >
           <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">close</mat-icon>
           <span>Close</span>
@@ -151,12 +157,12 @@
   <!-- MAIN CONTENT AREA -->
   <main class="flex-1 max-w-[1200px] w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
     <!-- ======================================================================= -->
-    <!-- SCREEN 1: MARK ATTENDANCE (SIMPLE & PRIVACY-SAFE FOR EVERYONE)          -->
+    <!-- SCREEN 1: AUTOMATIC FACE RECOGNITION & ONE-CLICK "OKAY" CONFIRMATION    -->
     <!-- ======================================================================= -->
     @if (activeTab() === 'scanner') {
       <section class="space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          <!-- Left 7 Columns: Camera Box -->
+          <!-- Left 7 Columns: Live Face Scanner -->
           <div
             class="lg:col-span-7 vault-card rounded-xl p-5 flex flex-col justify-between space-y-4"
           >
@@ -166,16 +172,16 @@
                   Look at the Camera
                 </h1>
                 <p class="text-xs sm:text-sm text-[var(--text-secondary)]">
-                  {{ cameraStatusText() }} · Automatic Firebase Sync Active
+                  {{ cameraStatusText() }} · Your details appear automatically
                 </p>
               </div>
 
-              <!-- Simple Camera & Photo Buttons -->
+              <!-- Camera, Photo & Next Face Buttons -->
               <div class="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
                   (click)="toggleLiveCamera()"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-[var(--border-sage)] bg-[var(--bg-sage-subtle)] text-[var(--text-primary)] hover:opacity-90 whitespace-nowrap shrink-0"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-[var(--border-sage)] bg-[var(--bg-sage-subtle)] text-[var(--text-primary)] whitespace-nowrap shrink-0"
                 >
                   <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">{{
                     cameraActive() ? 'videocam_off' : 'videocam'
@@ -185,7 +191,7 @@
 
                 <label
                   for="facePhotoUploadInput"
-                  class="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg vault-surface text-[var(--text-primary)] hover:opacity-90 whitespace-nowrap shrink-0"
+                  class="btn-floating cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg vault-surface text-[var(--text-primary)] whitespace-nowrap shrink-0"
                 >
                   <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">photo_camera</mat-icon>
                   <span>Upload Face Photo</span>
@@ -198,11 +204,21 @@
                   />
                 </label>
 
+                <button
+                  type="button"
+                  (click)="cycleRecognizedFace()"
+                  title="Test recognizing the next saved person"
+                  class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg vault-surface text-[var(--text-primary)] whitespace-nowrap shrink-0"
+                >
+                  <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">autorenew</mat-icon>
+                  <span>Scan Next Face</span>
+                </button>
+
                 @if (uploadedPortraitDataUrl()) {
                   <button
                     type="button"
                     (click)="clearUploadedPortrait()"
-                    class="inline-flex items-center gap-1 px-2.5 py-2 text-xs font-medium rounded-lg text-[var(--status-error)] hover:underline whitespace-nowrap shrink-0"
+                    class="inline-flex items-center gap-1 px-2.5 py-2 text-xs font-medium rounded-lg vault-surface text-[var(--status-error)] whitespace-nowrap shrink-0"
                   >
                     <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">delete</mat-icon>
                     <span>Clear Photo</span>
@@ -232,120 +248,126 @@
             </div>
           </div>
 
-          <!-- Right 5 Columns: Easy Check-In Box -->
+          <!-- Right 5 Columns: Automatic Recognized Details + One-Click "Okay" Button -->
           <div class="lg:col-span-5 flex flex-col justify-between gap-5">
-            <!-- Step-by-Step Check-In Card -->
             <div class="vault-card rounded-xl p-5 space-y-4 flex-1 flex flex-col justify-between">
-              <div class="space-y-4">
-                <div>
-                  <h2 class="font-display text-2xl font-bold text-[var(--text-primary)]">
-                    Mark Your Attendance
-                  </h2>
-                  <p class="text-xs sm:text-sm text-[var(--text-secondary)]">
-                    Pick your name below and click the big button to save your attendance.
-                  </p>
-                </div>
-
-                <div>
-                  <label
-                    for="subjectSelect"
-                    class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5"
-                  >
-                    1. Who are you?
-                  </label>
-                  <select
-                    id="subjectSelect"
-                    [value]="selectedSubjectId()"
-                    (change)="selectedSubjectId.set($any($event.target).value)"
-                    class="w-full px-3 py-2.5 text-sm rounded-lg input-vault"
-                  >
-                    @for (p of store.facialProfiles(); track p.id) {
-                      <option [value]="p.id">
-                        {{ p.fullName }} ({{ p.branch }})
-                      </option>
-                    }
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    for="verifyStatusSelect"
-                    class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5"
-                  >
-                    2. Attendance Type
-                  </label>
-                  <select
-                    id="verifyStatusSelect"
-                    [value]="verifyAttendanceStatus()"
-                    (change)="verifyAttendanceStatus.set($any($event.target).value)"
-                    class="w-full px-3 py-2.5 text-sm rounded-lg input-vault"
-                  >
-                    <option value="present">Present (On Time)</option>
-                    <option value="late">Late</option>
-                    <option value="on_leave">On Leave</option>
-                  </select>
-                </div>
-
-                <!-- Simple Location Box -->
-                <div class="vault-sage-panel rounded-lg p-3.5 space-y-2 text-xs">
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="font-semibold text-[var(--text-primary)]">
-                      3. Your Current Place:
-                    </span>
-                    <button
-                      type="button"
-                      (click)="refreshDeviceLocation()"
-                      [disabled]="geoBusy()"
-                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-medium hover:opacity-90 whitespace-nowrap shrink-0"
-                    >
-                      <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">my_location</mat-icon>
-                      <span>{{ geoBusy() ? 'Finding...' : 'Find My Location' }}</span>
-                    </button>
-                  </div>
-                  <div class="text-[var(--text-secondary)] truncate">
-                    {{ geoState().locationName }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="pt-3 space-y-3">
-                <button
-                  type="button"
-                  (click)="executeBiometricVerifyAndRecord()"
-                  [disabled]="isScanningNow()"
-                  class="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-lg btn-burgundy text-sm font-semibold whitespace-nowrap"
-                >
-                  <mat-icon class="!w-5 !h-5 !text-[20px] leading-none">check_circle</mat-icon>
-                  <span>{{
-                    isScanningNow() ? 'Saving Attendance...' : 'Mark My Attendance Now'
-                  }}</span>
-                </button>
-
-                <button
-                  type="button"
-                  (click)="switchTab('enroll')"
-                  class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg vault-surface text-xs font-semibold text-[var(--text-primary)] hover:opacity-90 whitespace-nowrap"
-                >
-                  <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">person_add</mat-icon>
-                  <span>New here? Add Your Face First</span>
-                </button>
-
-                <!-- Simple Receipt for the Person Who Just Checked In -->
-                @if (latestRecordedLog(); as receipt) {
-                  <div class="p-3.5 rounded-lg vault-surface text-xs space-y-1">
-                    <div
-                      class="flex items-center justify-between font-bold text-[var(--status-present)]"
-                    >
-                      <span>Saved! Thank you, {{ receipt.fullName }}</span>
-                      <span class="font-mono-tabular">{{ receipt.timeLabel }}</span>
-                    </div>
-                    <div class="text-[var(--text-secondary)]">
-                      Branch: {{ receipt.branch }} · Status:
-                      <span class="capitalize">{{ receipt.attendanceStatus.replace('_', ' ') }}</span>
+              @if (autoRecognizedProfile(); as person) {
+                <div class="space-y-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <div>
+                      <span
+                        class="inline-flex items-center gap-1 text-xs font-bold text-[var(--status-present)]"
+                      >
+                        <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">verified</mat-icon>
+                        <span>Face Recognized Automatically ({{ autoMatchConfidence() }}%)</span>
+                      </span>
+                      <h2 class="font-display text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mt-0.5">
+                        {{ person.fullName }}
+                      </h2>
                     </div>
                   </div>
-                }
-              </div>
+
+                  <!-- Automatically Shown Details (No Questions Asked) -->
+                  <div class="vault-sage-panel rounded-xl p-4 space-y-2.5 text-xs sm:text-sm">
+                    <div class="flex items-center justify-between gap-2 border-b border-[var(--border-sage)]/60 pb-2">
+                      <span class="text-[var(--text-secondary)]">Roll Number</span>
+                      <span class="font-mono-tabular font-bold text-[var(--text-primary)]">
+                        {{ person.employeeCode }}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 border-b border-[var(--border-sage)]/60 pb-2">
+                      <span class="text-[var(--text-secondary)]">Branch</span>
+                      <span class="font-semibold text-[var(--text-primary)]">
+                        {{ person.branch }}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 border-b border-[var(--border-sage)]/60 pb-2">
+                      <span class="text-[var(--text-secondary)]">Date of Birth</span>
+                      <span class="font-mono-tabular font-semibold text-[var(--text-primary)]">
+                        {{ person.dateOfBirth }}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 border-b border-[var(--border-sage)]/60 pb-2">
+                      <span class="text-[var(--text-secondary)]">Phone Number</span>
+                      <span class="font-mono-tabular font-semibold text-[var(--text-primary)]">
+                        {{ person.phoneNumber }}
+                      </span>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-2 border-b border-[var(--border-sage)]/60 pb-2">
+                      <span class="text-[var(--text-secondary)]">Date & Time</span>
+                      <span class="font-mono-tabular font-semibold text-[var(--text-primary)]">
+                        {{ liveDateLabel() }} · {{ liveClockLabel() }}
+                      </span>
+                    </div>
+
+                    <div class="space-y-1 pt-0.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="text-[var(--text-secondary)]">Your Location</span>
+                        <button
+                          type="button"
+                          (click)="refreshDeviceLocation()"
+                          [disabled]="geoBusy()"
+                          class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[11px] text-[var(--text-primary)] font-semibold whitespace-nowrap shrink-0"
+                        >
+                          <mat-icon class="!w-3 !h-3 !text-[12px] leading-none">my_location</mat-icon>
+                          <span>{{ geoBusy() ? 'Updating...' : 'Refresh GPS' }}</span>
+                        </button>
+                      </div>
+                      <div class="text-xs font-medium text-[var(--text-primary)] truncate">
+                        {{ geoState().locationName }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Single Click "Okay" Confirmation Button -->
+                <div class="pt-3 space-y-3">
+                  <button
+                    type="button"
+                    (click)="executeBiometricVerifyAndRecord()"
+                    [disabled]="isScanningNow()"
+                    class="w-full inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl btn-burgundy text-sm sm:text-base font-bold whitespace-nowrap"
+                  >
+                    <mat-icon class="!w-5 !h-5 !text-[20px] leading-none">thumb_up</mat-icon>
+                    <span>{{
+                      isScanningNow()
+                        ? 'Recording Attendance...'
+                        : 'Okay — Confirm & Record Attendance'
+                    }}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="switchTab('enroll')"
+                    class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl vault-surface text-xs font-semibold text-[var(--text-primary)] whitespace-nowrap"
+                  >
+                    <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">person_add</mat-icon>
+                    <span>New Person? Create Face Data First</span>
+                  </button>
+
+                  <!-- Instant Confirmation Receipt -->
+                  @if (latestRecordedLog(); as receipt) {
+                    <div class="p-3.5 rounded-xl vault-surface text-xs space-y-1">
+                      <div
+                        class="flex items-center justify-between font-bold text-[var(--status-present)]"
+                      >
+                        <span>Confirmed! Attendance Recorded</span>
+                        <span class="font-mono-tabular">{{ receipt.timeLabel }}</span>
+                      </div>
+                      <div class="text-[var(--text-primary)] font-medium">
+                        {{ receipt.fullName }} ({{ receipt.employeeCode }}) · {{ receipt.branch }}
+                      </div>
+                      <div class="text-[var(--text-secondary)] truncate">
+                        Sent to Admin with Location: {{ receipt.locationName }}
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -353,16 +375,16 @@
     }
 
     <!-- ======================================================================= -->
-    <!-- SCREEN 2: ADD NEW PERSON (SUPER SIMPLE FACE REGISTRATION)               -->
+    <!-- SCREEN 2: ADD NEW PERSON (NAME, BRANCH, DOB, ROLL NO, PHONE NUMBER)     -->
     <!-- ======================================================================= -->
     @if (activeTab() === 'enroll') {
       <section class="max-w-xl mx-auto vault-card rounded-xl p-6 sm:p-8 space-y-5">
         <div>
           <h1 class="font-display text-3xl font-bold text-[var(--text-primary)]">
-            Add a New Person
+            Create New Face Data
           </h1>
           <p class="text-sm text-[var(--text-secondary)] mt-1">
-            Type your details below. Your face and name will be saved automatically to Firebase so you can mark attendance from anywhere.
+            Enter your Name, Branch, Date of Birth, Roll Number, and Phone Number once. Next time, your face will automatically show all your details and you only press <strong>Okay</strong>!
           </p>
         </div>
 
@@ -372,7 +394,7 @@
               for="enrollNameInput"
               class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
             >
-              Your Full Name
+              1. Your Full Name
             </label>
             <input
               id="enrollNameInput"
@@ -387,27 +409,10 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label
-                for="enrollCodeInput"
-                class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
-              >
-                ID / Roll Number
-              </label>
-              <input
-                id="enrollCodeInput"
-                type="text"
-                [value]="enrollCode()"
-                (input)="enrollCode.set($any($event.target).value)"
-                placeholder="EMP-1050"
-                class="w-full px-3.5 py-2.5 text-sm rounded-lg input-vault font-mono-tabular"
-              />
-            </div>
-
-            <div>
-              <label
                 for="enrollBranchSelect"
                 class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
               >
-                Office / Branch
+                2. Your Branch
               </label>
               <select
                 id="enrollBranchSelect"
@@ -420,36 +425,71 @@
                 }
               </select>
             </div>
+
+            <div>
+              <label
+                for="enrollDobInput"
+                class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
+              >
+                3. Date of Birth
+              </label>
+              <input
+                id="enrollDobInput"
+                type="date"
+                [value]="enrollDob()"
+                (input)="enrollDob.set($any($event.target).value)"
+                class="w-full px-3.5 py-2.5 text-sm rounded-lg input-vault font-mono-tabular"
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              for="enrollRoleInput"
-              class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
-            >
-              Job / Class Role
-            </label>
-            <input
-              id="enrollRoleInput"
-              type="text"
-              [value]="enrollRole()"
-              (input)="enrollRole.set($any($event.target).value)"
-              placeholder="e.g. Student / Engineer"
-              class="w-full px-3.5 py-2.5 text-sm rounded-lg input-vault"
-            />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="enrollCodeInput"
+                class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
+              >
+                4. Roll Number
+              </label>
+              <input
+                id="enrollCodeInput"
+                type="text"
+                [value]="enrollCode()"
+                (input)="enrollCode.set($any($event.target).value)"
+                placeholder="e.g. ROLL-1050"
+                class="w-full px-3.5 py-2.5 text-sm rounded-lg input-vault font-mono-tabular"
+              />
+            </div>
+
+            <div>
+              <label
+                for="enrollPhoneInput"
+                class="block text-xs font-semibold text-[var(--text-secondary)] mb-1"
+              >
+                5. Phone Number
+              </label>
+              <input
+                id="enrollPhoneInput"
+                type="tel"
+                [value]="enrollPhone()"
+                (input)="enrollPhone.set($any($event.target).value)"
+                placeholder="e.g. +91 98200 11223"
+                class="w-full px-3.5 py-2.5 text-sm rounded-lg input-vault font-mono-tabular"
+              />
+            </div>
           </div>
 
           <!-- Optional Photo Upload for Face -->
           <div class="vault-sage-panel rounded-lg p-3.5 flex items-center justify-between gap-3 text-xs">
             <span class="text-[var(--text-primary)]">
-              Want to use a photo from your phone or computer?
+              Capture face from camera or choose a photo:
             </span>
             <label
               for="enrollPhotoInput"
-              class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-semibold hover:opacity-90 whitespace-nowrap shrink-0"
+              class="btn-floating cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] font-semibold whitespace-nowrap shrink-0"
             >
               <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">upload_file</mat-icon>
-              <span>Choose Photo</span>
+              <span>Choose Face Photo</span>
               <input
                 id="enrollPhotoInput"
                 type="file"
@@ -466,17 +506,18 @@
             type="button"
             (click)="executeEnrollCloudProfile()"
             [disabled]="isScanningNow()"
-            class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-lg btn-burgundy text-sm font-semibold whitespace-nowrap"
+            class="flex-1 inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl btn-burgundy text-sm font-semibold whitespace-nowrap"
           >
             <mat-icon class="!w-5 !h-5 !text-[20px] leading-none">save</mat-icon>
-            <span>Save My Face & Details</span>
+            <span>Save Face & Details</span>
           </button>
           <button
             type="button"
             (click)="switchTab('scanner')"
-            class="py-3 px-4 rounded-lg vault-surface text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] whitespace-nowrap"
+            class="inline-flex items-center gap-1 py-3 px-4 rounded-xl vault-surface text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] whitespace-nowrap"
           >
-            Back
+            <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">arrow_back</mat-icon>
+            <span>Back</span>
           </button>
         </div>
       </section>
@@ -511,7 +552,7 @@
             <button
               type="button"
               (click)="printExecutiveReport()"
-              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg vault-surface text-xs font-semibold text-[var(--text-primary)] hover:opacity-90 whitespace-nowrap shrink-0"
+              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg vault-surface text-xs font-semibold text-[var(--text-primary)] whitespace-nowrap shrink-0"
             >
               <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">print</mat-icon>
               <span>Print Report</span>
@@ -570,7 +611,7 @@
             </div>
           </div>
           <div class="vault-card rounded-xl p-4">
-            <span class="text-xs text-[var(--text-muted)]">On Time</span>
+            <span class="text-xs text-[var(--text-muted)]">Confirmed Present</span>
             <div class="font-mono-tabular text-2xl font-bold text-[var(--status-present)] mt-1">
               {{ reportKpis().present }}
             </div>
@@ -582,7 +623,7 @@
             </div>
           </div>
           <div class="vault-card rounded-xl p-4">
-            <span class="text-xs text-[var(--text-muted)]">On-Time Score</span>
+            <span class="text-xs text-[var(--text-muted)]">Attendance Score</span>
             <div class="font-mono-tabular text-2xl font-bold text-[var(--text-primary)] mt-1">
               {{ reportKpis().onTimeRate }}%
             </div>
@@ -594,10 +635,10 @@
           <table class="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] text-xs">
-                <th class="py-2.5 pr-4 font-semibold">Name</th>
+                <th class="py-2.5 pr-4 font-semibold">Name & Roll No.</th>
                 <th class="py-2.5 px-4 font-semibold">Branch</th>
+                <th class="py-2.5 px-4 font-semibold">DOB & Phone</th>
                 <th class="py-2.5 px-4 font-semibold text-right">Days Present</th>
-                <th class="py-2.5 px-4 font-semibold text-right">Days Late</th>
                 <th class="py-2.5 pl-4 font-semibold">Last Check-In Time</th>
               </tr>
             </thead>
@@ -611,15 +652,14 @@
                     </div>
                   </td>
                   <td class="py-3 px-4 text-[var(--text-secondary)]">{{ row.branch }}</td>
+                  <td class="py-3 px-4 text-xs text-[var(--text-secondary)] font-mono-tabular">
+                    <div>DOB: {{ row.dateOfBirth }}</div>
+                    <div>{{ row.phoneNumber }}</div>
+                  </td>
                   <td
                     class="py-3 px-4 font-mono-tabular text-right font-semibold text-[var(--status-present)]"
                   >
                     {{ row.presentCount }}
-                  </td>
-                  <td
-                    class="py-3 px-4 font-mono-tabular text-right font-semibold text-[var(--status-late)]"
-                  >
-                    {{ row.lateCount }}
                   </td>
                   <td class="py-3 pl-4 text-xs text-[var(--text-secondary)] font-mono-tabular">
                     {{ row.lastCheckInTime }}
@@ -674,9 +714,12 @@
                   <button
                     type="button"
                     (click)="showPasswordPlain.set(!showPasswordPlain())"
-                    class="px-3 py-2 text-xs font-medium rounded-lg vault-surface text-[var(--text-secondary)]"
+                    class="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium rounded-lg vault-surface text-[var(--text-secondary)]"
                   >
-                    {{ showPasswordPlain() ? 'Hide' : 'Show' }}
+                    <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">{{
+                      showPasswordPlain() ? 'visibility_off' : 'visibility'
+                    }}</mat-icon>
+                    <span>{{ showPasswordPlain() ? 'Hide' : 'Show' }}</span>
                   </button>
                 </div>
               </div>
@@ -710,45 +753,48 @@
                 Admin Secret Panel
               </h1>
               <p class="text-xs sm:text-sm text-[var(--text-secondary)]">
-                All private data from Firebase · See locations, edit or remove records, and change app themes
+                All confidential details from Firebase · Name, Roll Number, DOB, Phone, Time & Location
               </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-2">
-              <div class="flex items-center gap-1 p-1 rounded-lg vault-surface">
+              <div class="flex items-center gap-1.5 p-1 rounded-lg vault-surface">
                 <button
                   type="button"
                   (click)="adminSection.set('live')"
-                  class="px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap"
                   [class.btn-burgundy]="adminSection() === 'live'"
                   [class.text-[var(--text-secondary)]]="adminSection() !== 'live'"
                 >
-                  All Attendance & Locations ({{ store.attendanceLogs().length }})
+                  <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">fact_check</mat-icon>
+                  <span>All Attendance ({{ store.attendanceLogs().length }})</span>
                 </button>
                 <button
                   type="button"
                   (click)="adminSection.set('users')"
-                  class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap"
+                  class="inline-flex items-center gap-1 px-3.5 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap"
                   [class.btn-burgundy]="adminSection() === 'users'"
                   [class.text-[var(--text-secondary)]]="adminSection() !== 'users'"
                 >
-                  People & Faces ({{ store.facialProfiles().length }})
+                  <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">groups</mat-icon>
+                  <span>People & Faces ({{ store.facialProfiles().length }})</span>
                 </button>
                 <button
                   type="button"
                   (click)="adminSection.set('themes')"
-                  class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap"
+                  class="inline-flex items-center gap-1 px-3.5 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap"
                   [class.btn-burgundy]="adminSection() === 'themes'"
                   [class.text-[var(--text-secondary)]]="adminSection() !== 'themes'"
                 >
-                  Colors & Themes
+                  <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">palette</mat-icon>
+                  <span>Colors & Themes</span>
                 </button>
               </div>
 
               <button
                 type="button"
                 (click)="store.lockVault()"
-                class="inline-flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-lg vault-surface text-[var(--text-primary)] hover:opacity-85 whitespace-nowrap"
+                class="inline-flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-lg vault-surface text-[var(--text-primary)] whitespace-nowrap"
               >
                 <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">lock</mat-icon>
                 <span>Lock Admin</span>
@@ -766,9 +812,10 @@
                 <button
                   type="button"
                   (click)="editingProfile.set(null)"
-                  class="text-xs font-semibold text-[var(--text-secondary)]"
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded vault-surface text-xs font-semibold text-[var(--text-secondary)]"
                 >
-                  Close
+                  <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">close</mat-icon>
+                  <span>Close</span>
                 </button>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -783,7 +830,7 @@
                   />
                 </div>
                 <div>
-                  <label for="edProfCode" class="block text-xs font-medium mb-1">ID Code</label>
+                  <label for="edProfCode" class="block text-xs font-medium mb-1">Roll Number</label>
                   <input
                     id="edProfCode"
                     type="text"
@@ -806,27 +853,24 @@
                   </select>
                 </div>
                 <div>
-                  <label for="edProfRole" class="block text-xs font-medium mb-1">Job / Role</label>
+                  <label for="edProfDob" class="block text-xs font-medium mb-1">Date of Birth</label>
                   <input
-                    id="edProfRole"
-                    type="text"
-                    [value]="editProf.roleTitle"
-                    (input)="updateEditingProfileField('roleTitle', $any($event.target).value)"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
+                    id="edProfDob"
+                    type="date"
+                    [value]="editProf.dateOfBirth"
+                    (input)="updateEditingProfileField('dateOfBirth', $any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
                   />
                 </div>
                 <div>
-                  <label for="edProfStatus" class="block text-xs font-medium mb-1">Status</label>
-                  <select
-                    id="edProfStatus"
-                    [value]="editProf.status"
-                    (change)="updateEditingProfileField('status', $any($event.target).value)"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
-                  >
-                    <option value="active">Active</option>
-                    <option value="suspended">Paused</option>
-                    <option value="archived">Archived</option>
-                  </select>
+                  <label for="edProfPhone" class="block text-xs font-medium mb-1">Phone Number</label>
+                  <input
+                    id="edProfPhone"
+                    type="text"
+                    [value]="editProf.phoneNumber"
+                    (input)="updateEditingProfileField('phoneNumber', $any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
                 </div>
               </div>
               <div class="flex justify-end">
@@ -852,12 +896,13 @@
                 <button
                   type="button"
                   (click)="editingLog.set(null)"
-                  class="text-xs font-semibold text-[var(--text-secondary)]"
+                  class="inline-flex items-center gap-1 px-2.5 py-1 rounded vault-surface text-xs font-semibold text-[var(--text-secondary)]"
                 >
-                  Close
+                  <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">close</mat-icon>
+                  <span>Close</span>
                 </button>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div>
                   <label for="edLogName" class="block text-xs font-medium mb-1">Name</label>
                   <input
@@ -866,6 +911,16 @@
                     [value]="editLog.fullName"
                     (input)="updateEditingLogField('fullName', $any($event.target).value)"
                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
+                  />
+                </div>
+                <div>
+                  <label for="edLogCode" class="block text-xs font-medium mb-1">Roll Number</label>
+                  <input
+                    id="edLogCode"
+                    type="text"
+                    [value]="editLog.employeeCode"
+                    (input)="updateEditingLogField('employeeCode', $any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
                   />
                 </div>
                 <div>
@@ -882,18 +937,24 @@
                   </select>
                 </div>
                 <div>
-                  <label for="edLogStatus" class="block text-xs font-medium mb-1">Status</label>
-                  <select
-                    id="edLogStatus"
-                    [value]="editLog.attendanceStatus"
-                    (change)="updateEditingLogField('attendanceStatus', $any($event.target).value)"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
-                  >
-                    <option value="present">Present</option>
-                    <option value="late">Late</option>
-                    <option value="on_leave">On Leave</option>
-                    <option value="revoked">Cancelled</option>
-                  </select>
+                  <label for="edLogDob" class="block text-xs font-medium mb-1">Date of Birth</label>
+                  <input
+                    id="edLogDob"
+                    type="date"
+                    [value]="editLog.dateOfBirth"
+                    (input)="updateEditingLogField('dateOfBirth', $any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
+                </div>
+                <div>
+                  <label for="edLogPhone" class="block text-xs font-medium mb-1">Phone Number</label>
+                  <input
+                    id="edLogPhone"
+                    type="text"
+                    [value]="editLog.phoneNumber"
+                    (input)="updateEditingLogField('phoneNumber', $any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
                 </div>
                 <div>
                   <label for="edLogDate" class="block text-xs font-medium mb-1">Date</label>
@@ -944,31 +1005,31 @@
             <div class="space-y-5">
               <!-- Quick Add Attendance Bar for Admin -->
               <div
-                class="vault-sage-panel rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end"
+                class="vault-sage-panel rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end"
               >
                 <div>
                   <label for="qaNameInput" class="block text-xs font-semibold mb-1">
-                    Add Attendance — Name
+                    Name
                   </label>
                   <input
                     id="qaNameInput"
                     type="text"
                     [value]="quickAddName()"
                     (input)="quickAddName.set($any($event.target).value)"
-                    placeholder="Type name"
+                    placeholder="Full Name"
                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
                   />
                 </div>
                 <div>
                   <label for="qaCodeInput" class="block text-xs font-semibold mb-1">
-                    ID Number
+                    Roll Number
                   </label>
                   <input
                     id="qaCodeInput"
                     type="text"
                     [value]="quickAddCode()"
                     (input)="quickAddCode.set($any($event.target).value)"
-                    placeholder="EMP-1065"
+                    placeholder="ROLL-1065"
                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
                   />
                 </div>
@@ -988,19 +1049,29 @@
                   </select>
                 </div>
                 <div>
-                  <label for="qaStatusSelect" class="block text-xs font-semibold mb-1">
-                    Status
+                  <label for="qaDobInput" class="block text-xs font-semibold mb-1">
+                    Date of Birth
                   </label>
-                  <select
-                    id="qaStatusSelect"
-                    [value]="quickAddStatus()"
-                    (change)="quickAddStatus.set($any($event.target).value)"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
-                  >
-                    <option value="present">Present</option>
-                    <option value="late">Late</option>
-                    <option value="on_leave">On Leave</option>
-                  </select>
+                  <input
+                    id="qaDobInput"
+                    type="date"
+                    [value]="quickAddDob()"
+                    (input)="quickAddDob.set($any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
+                </div>
+                <div>
+                  <label for="qaPhoneInput" class="block text-xs font-semibold mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    id="qaPhoneInput"
+                    type="text"
+                    [value]="quickAddPhone()"
+                    (input)="quickAddPhone.set($any($event.target).value)"
+                    placeholder="+91 98200..."
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
                 </div>
                 <div>
                   <button
@@ -1009,29 +1080,29 @@
                     class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-lg btn-burgundy text-xs font-semibold whitespace-nowrap"
                   >
                     <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">add_circle</mat-icon>
-                    <span>Add Attendance</span>
+                    <span>Add Record</span>
                   </button>
                 </div>
               </div>
 
               <!-- Search & Filter -->
-              <div class="vault-card rounded-xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="vault-card rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label for="rtSearchInput" class="block text-xs font-semibold mb-1">
-                    Search Name or Place
+                    Search Name, Roll No., Phone, or Place
                   </label>
                   <input
                     id="rtSearchInput"
                     type="text"
                     [value]="realtimeSearch()"
                     (input)="realtimeSearch.set($any($event.target).value)"
-                    placeholder="Type name or city..."
+                    placeholder="Type name, roll number, phone, or city..."
                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
                   />
                 </div>
                 <div>
                   <label for="rtBranchSelect" class="block text-xs font-semibold mb-1">
-                    Branch
+                    Filter by Branch
                   </label>
                   <select
                     id="rtBranchSelect"
@@ -1045,22 +1116,6 @@
                     }
                   </select>
                 </div>
-                <div>
-                  <label for="rtStatusSelect" class="block text-xs font-semibold mb-1">
-                    Status
-                  </label>
-                  <select
-                    id="rtStatusSelect"
-                    [value]="realtimeStatusFilter()"
-                    (change)="realtimeStatusFilter.set($any($event.target).value)"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
-                  >
-                    <option value="ALL">All</option>
-                    <option value="present">Present</option>
-                    <option value="late">Late</option>
-                    <option value="on_leave">On Leave</option>
-                  </select>
-                </div>
               </div>
 
               <!-- Attendance & Location Table -->
@@ -1068,10 +1123,10 @@
                 <table class="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
                     <tr class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] text-xs">
-                      <th class="py-2.5 pr-4 font-semibold">Person</th>
+                      <th class="py-2.5 pr-4 font-semibold">Person & Roll No.</th>
                       <th class="py-2.5 px-4 font-semibold">Branch</th>
+                      <th class="py-2.5 px-4 font-semibold">DOB & Phone</th>
                       <th class="py-2.5 px-4 font-semibold">Date & Time</th>
-                      <th class="py-2.5 px-4 font-semibold">Status</th>
                       <th class="py-2.5 px-4 font-semibold">Location Added From (GPS)</th>
                       <th class="py-2.5 pl-4 font-semibold text-right">Edit / Remove</th>
                     </tr>
@@ -1088,25 +1143,18 @@
                           </div>
                         </td>
                         <td class="py-3 px-4 text-[var(--text-secondary)]">{{ log.branch }}</td>
-                        <td class="py-3 px-4 font-mono-tabular text-[var(--text-primary)]">
-                          {{ log.dateKey }} · {{ log.timeLabel }}
+                        <td class="py-3 px-4 text-xs font-mono-tabular text-[var(--text-secondary)]">
+                          <div>DOB: {{ log.dateOfBirth }}</div>
+                          <div>{{ log.phoneNumber }}</div>
                         </td>
-                        <td class="py-3 px-4">
-                          <span
-                            class="font-semibold capitalize"
-                            [style.color]="
-                              log.attendanceStatus === 'present'
-                                ? 'var(--status-present)'
-                                : log.attendanceStatus === 'late'
-                                ? 'var(--status-late)'
-                                : 'var(--status-error)'
-                            "
-                          >
-                            {{ log.attendanceStatus.replace('_', ' ') }}
-                          </span>
+                        <td class="py-3 px-4 font-mono-tabular text-[var(--text-primary)]">
+                          <div>{{ log.dateKey }}</div>
+                          <div class="text-xs text-[var(--status-present)] font-semibold">
+                            {{ log.timeLabel }}
+                          </div>
                         </td>
                         <td class="py-3 px-4 text-xs text-[var(--text-secondary)]">
-                          <div class="max-w-[260px] truncate font-medium text-[var(--text-primary)]">
+                          <div class="max-w-[240px] truncate font-medium text-[var(--text-primary)]">
                             {{ log.locationName }}
                           </div>
                           <div class="font-mono-tabular text-[11px] text-[var(--text-muted)]">
@@ -1150,11 +1198,11 @@
             <div class="space-y-5">
               <!-- Quick Add Person Bar -->
               <div
-                class="vault-sage-panel rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end"
+                class="vault-sage-panel rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end"
               >
                 <div>
                   <label for="admAddName" class="block text-xs font-semibold mb-1">
-                    Add New Person — Name
+                    Full Name
                   </label>
                   <input
                     id="admAddName"
@@ -1167,14 +1215,14 @@
                 </div>
                 <div>
                   <label for="admAddCode" class="block text-xs font-semibold mb-1">
-                    ID Code
+                    Roll Number
                   </label>
                   <input
                     id="admAddCode"
                     type="text"
                     [value]="enrollCode()"
                     (input)="enrollCode.set($any($event.target).value)"
-                    placeholder="EMP-1088"
+                    placeholder="ROLL-1088"
                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
                   />
                 </div>
@@ -1194,16 +1242,28 @@
                   </select>
                 </div>
                 <div>
-                  <label for="admAddRole" class="block text-xs font-semibold mb-1">
-                    Job / Role
+                  <label for="admAddDob" class="block text-xs font-semibold mb-1">
+                    Date of Birth
                   </label>
                   <input
-                    id="admAddRole"
+                    id="admAddDob"
+                    type="date"
+                    [value]="enrollDob()"
+                    (input)="enrollDob.set($any($event.target).value)"
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
+                  />
+                </div>
+                <div>
+                  <label for="admAddPhone" class="block text-xs font-semibold mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    id="admAddPhone"
                     type="text"
-                    [value]="enrollRole()"
-                    (input)="enrollRole.set($any($event.target).value)"
-                    placeholder="Role"
-                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault"
+                    [value]="enrollPhone()"
+                    (input)="enrollPhone.set($any($event.target).value)"
+                    placeholder="+91 98200..."
+                    class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg input-vault font-mono-tabular"
                   />
                 </div>
                 <div>
@@ -1222,10 +1282,10 @@
                 <table class="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
                     <tr class="border-b border-[var(--border-subtle)] text-[var(--text-muted)] text-xs">
-                      <th class="py-2.5 pr-4 font-semibold">Name & ID</th>
+                      <th class="py-2.5 pr-4 font-semibold">Name & Roll No.</th>
                       <th class="py-2.5 px-4 font-semibold">Branch</th>
-                      <th class="py-2.5 px-4 font-semibold">Role</th>
-                      <th class="py-2.5 px-4 font-semibold">Saved Face ID</th>
+                      <th class="py-2.5 px-4 font-semibold">Date of Birth</th>
+                      <th class="py-2.5 px-4 font-semibold">Phone Number</th>
                       <th class="py-2.5 pl-4 font-semibold text-right">Edit / Remove</th>
                     </tr>
                   </thead>
@@ -1241,9 +1301,11 @@
                           </div>
                         </td>
                         <td class="py-3 px-4 text-[var(--text-secondary)]">{{ prof.branch }}</td>
-                        <td class="py-3 px-4 text-[var(--text-secondary)]">{{ prof.roleTitle }}</td>
                         <td class="py-3 px-4 font-mono-tabular text-xs text-[var(--text-primary)]">
-                          {{ prof.descriptorHash }}
+                          {{ prof.dateOfBirth }}
+                        </td>
+                        <td class="py-3 px-4 font-mono-tabular text-xs text-[var(--text-primary)]">
+                          {{ prof.phoneNumber }}
                         </td>
                         <td class="py-3 pl-4 text-right space-x-2 whitespace-nowrap">
                           <button
@@ -1283,33 +1345,45 @@
                   <button
                     type="button"
                     (click)="applyThemePreset('cream_burgundy')"
-                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#F6F2EA] text-[#1E191B] text-left space-y-1 hover:opacity-90"
+                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#F6F2EA] text-[#1E191B] text-left space-y-1"
                   >
-                    <div class="font-bold text-xs">Warm Cream & Burgundy</div>
+                    <div class="font-bold text-xs flex items-center gap-1.5">
+                      <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">wb_sunny</mat-icon>
+                      <span>Warm Cream & Burgundy</span>
+                    </div>
                     <div class="text-[11px] opacity-75">Default soft beige, sage & burgundy</div>
                   </button>
                   <button
                     type="button"
                     (click)="applyThemePreset('royal_dark')"
-                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#110E12] text-[#F5EFE6] text-left space-y-1 hover:opacity-90"
+                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#110E12] text-[#F5EFE6] text-left space-y-1"
                   >
-                    <div class="font-bold text-xs">Royal Dark Mode</div>
+                    <div class="font-bold text-xs flex items-center gap-1.5">
+                      <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">dark_mode</mat-icon>
+                      <span>Royal Dark Mode</span>
+                    </div>
                     <div class="text-[11px] opacity-75">Easy on the eyes in low light</div>
                   </button>
                   <button
                     type="button"
                     (click)="applyThemePreset('sage_forest')"
-                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#E7EFEA] text-[#16241D] text-left space-y-1 hover:opacity-90"
+                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#E7EFEA] text-[#16241D] text-left space-y-1"
                   >
-                    <div class="font-bold text-xs">Calm Sage Green</div>
+                    <div class="font-bold text-xs flex items-center gap-1.5">
+                      <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">spa</mat-icon>
+                      <span>Calm Sage Green</span>
+                    </div>
                     <div class="text-[11px] opacity-75">Soft sage grey and forest tones</div>
                   </button>
                   <button
                     type="button"
                     (click)="applyThemePreset('midnight_gold')"
-                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#0D1117] text-[#F7F3E8] text-left space-y-1 hover:opacity-90"
+                    class="p-3.5 rounded-lg border border-[var(--border-subtle)] bg-[#0D1117] text-[#F7F3E8] text-left space-y-1"
                   >
-                    <div class="font-bold text-xs">Royal Midnight Gold</div>
+                    <div class="font-bold text-xs flex items-center gap-1.5">
+                      <mat-icon class="!w-4 !h-4 !text-[16px] leading-none">auto_awesome</mat-icon>
+                      <span>Royal Midnight Gold</span>
+                    </div>
                     <div class="text-[11px] opacity-75">Deep night canvas with royal gold</div>
                   </button>
                 </div>
@@ -1377,21 +1451,4 @@
       </section>
     }
   </main>
-
-  <!-- SIMPLE FOOTER -->
-  <footer class="no-print border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] py-4 mt-10">
-    <div
-      class="max-w-[1200px] mx-auto px-4 sm:px-8 flex items-center justify-between text-xs text-[var(--text-muted)]"
-    >
-      <span>Face Attendance · Automatically Connected to Firebase</span>
-      <button
-        type="button"
-        (click)="switchTab('admin')"
-        class="inline-flex items-center gap-1 hover:text-[var(--text-primary)]"
-      >
-        <mat-icon class="!w-3.5 !h-3.5 !text-[14px] leading-none">face</mat-icon>
-        <span>Admin</span>
-      </button>
-    </div>
-  </footer>
 </div>

@@ -23,15 +23,22 @@
 .btn-burgundy {
   background-color: var(--accent-burgundy);
   color: #F6F2EA;
-  transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 4px 10px rgba(94, 25, 40, 0.25));
+  transition:
+    background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-burgundy:hover {
+.btn-burgundy:hover:not(:disabled) {
   background-color: var(--accent-burgundy-hover);
+  transform: translateY(-3px) scale(1.03);
+  filter: drop-shadow(0 12px 22px rgba(94, 25, 40, 0.34));
 }
 
-.btn-burgundy:active {
-  transform: scale(0.99);
+.btn-burgundy:active:not(:disabled) {
+  transform: translateY(1px) scale(0.96);
+  filter: drop-shadow(0 3px 6px rgba(94, 25, 40, 0.2));
 }
 
 .input-vault {

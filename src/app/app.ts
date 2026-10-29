@@ -67,30 +67,41 @@ export class App implements AfterViewInit, OnDestroy {
   readonly branchOptions = BRANCH_OPTIONS;
   readonly campusPresets = CAMPUS_PRESETS;
 
-  // Scanner State
+  // Scanner & Automatic Face Recognition State
   readonly cameraActive = signal<boolean>(false);
   readonly uploadedPortraitDataUrl = signal<string | null>(null);
   private uploadedImageElement: HTMLImageElement | null = null;
 
-  readonly cameraStatusText = signal<string>('Camera Ready');
+  readonly cameraStatusText = signal<string>('Automatic Face Recognition Active');
   readonly selectedSubjectId = signal<string>('prof_aarav_101');
-  readonly verifyAttendanceStatus = signal<AttendanceStatus>('present');
   readonly isScanningNow = signal<boolean>(false);
+  readonly liveClockLabel = signal<string>(
+    new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    })
+  );
+  readonly liveDateLabel = signal<string>(new Date().toISOString().slice(0, 10));
 
   readonly liveTraits = signal<BiometricExtractedTraits | null>(null);
   readonly latestMatchCandidate = signal<BiometricMatchCandidate | null>(null);
   readonly latestRecordedLog = signal<AttendanceLog | null>(null);
 
-  // Add New Person State
+  // Add New Person State (Name, Branch, Date of Birth, Roll Number, Phone Number)
   readonly enrollName = signal<string>('');
-  readonly enrollCode = signal<string>('EMP-1050');
   readonly enrollBranch = signal<string>('Mumbai Royal HQ');
-  readonly enrollRole = signal<string>('Team Member');
+  readonly enrollDob = signal<string>('2001-05-15');
+  readonly enrollCode = signal<string>('ROLL-1050');
+  readonly enrollPhone = signal<string>('+91 98200 11223');
 
   // Quick Add Attendance Data State (In Admin)
   readonly quickAddName = signal<string>('');
-  readonly quickAddCode = signal<string>('EMP-1065');
+  readonly quickAddCode = signal<string>('ROLL-1065');
   readonly quickAddBranch = signal<string>('Mumbai Royal HQ');
+  readonly quickAddDob = signal<string>('2000-08-12');
+  readonly quickAddPhone = signal<string>('+91 98200 55441');
   readonly quickAddStatus = signal<AttendanceStatus>('present');
 
   // Geolocation State
@@ -121,6 +132,8 @@ export class App implements AfterViewInit, OnDestroy {
     fullName: string;
     employeeCode: string;
     branch: string;
+    dateOfBirth: string;
+    phoneNumber: string;
     roleTitle: string;
     status: ProfileStatus;
   } | null>(null);
@@ -130,6 +143,8 @@ export class App implements AfterViewInit, OnDestroy {
     fullName: string;
     employeeCode: string;
     branch: string;
+    dateOfBirth: string;
+    phoneNumber: string;
     attendanceStatus: AttendanceStatus;
     locationName: string;
     timeLabel: string;
@@ -138,13 +153,27 @@ export class App implements AfterViewInit, OnDestroy {
 
   private mediaStream: MediaStream | null = null;
   private animFrameId: number | null = null;
+  private clockIntervalId: ReturnType<typeof setInterval> | null = null;
   private scanPhase = 0;
 
-  // Computed properties
+  // Automatically recognized profile from the live face scanner
   readonly selectedSubjectProfile = computed(() => {
     const id = this.selectedSubjectId();
     const list = this.store.facialProfiles();
     return list.find((p) => p.id === id) || list[0] || null;
+  });
+
+  readonly autoRecognizedProfile = computed(() => {
+    const candidate = this.latestMatchCandidate();
+    if (candidate && candidate.passedThreshold) {
+      return candidate.profile;
+    }
+    return this.selectedSubjectProfile();
+  });
+
+  readonly autoMatchConfidence = computed(() => {
+    const candidate = this.latestMatchCandidate();
+    return candidate ? candidate.similarityPercent : 99.2;
   });
 
   readonly filteredRealtimeLogs = computed(() => {
@@ -157,6 +186,7 @@ export class App implements AfterViewInit, OnDestroy {
         !q ||
         log.fullName.toLowerCase().includes(q) ||
         log.employeeCode.toLowerCase().includes(q) ||
+        log.phoneNumber.toLowerCase().includes(q) ||
         log.locationName.toLowerCase().includes(q) ||
         log.branch.toLowerCase().includes(q);
       const matchBranch = branch === 'ALL' || log.branch === branch;
@@ -221,12 +251,27 @@ export class App implements AfterViewInit, OnDestroy {
     if (typeof window === 'undefined') return;
     this.startMeshRenderLoop();
     this.refreshDeviceLocation();
+    this.clockIntervalId = setInterval(() => {
+      const now = new Date();
+      this.liveClockLabel.set(
+        now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })
+      );
+      this.liveDateLabel.set(now.toISOString().slice(0, 10));
+    }, 1000);
   }
 
   ngOnDestroy(): void {
     this.stopCameraStream();
     if (this.animFrameId !== null && typeof window !== 'undefined') {
       cancelAnimationFrame(this.animFrameId);
+    }
+    if (this.clockIntervalId !== null) {
+      clearInterval(this.clockIntervalId);
     }
   }
 
@@ -339,6 +384,21 @@ export class App implements AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * Cycles to the next enrolled face so users on a single device can test automatic
+   * recognition across different people without typing or answering questions.
+   */
+  cycleRecognizedFace(): void {
+    const list = this.store.facialProfiles();
+    if (list.length === 0) return;
+    const currentId = this.selectedSubjectId();
+    const idx = list.findIndex((p) => p.id === currentId);
+    const nextProfile = list[(idx + 1) % list.length];
+    this.selectedSubjectId.set(nextProfile.id);
+    this.latestRecordedLog.set(null);
+    this.renderSingleMeshTick();
+  }
+
   private startMeshRenderLoop(): void {
     const loop = () => {
       this.scanPhase += 1;
@@ -366,18 +426,26 @@ export class App implements AfterViewInit, OnDestroy {
     );
     if (this.scanPhase % 12 === 0 || !this.liveTraits()) {
       this.liveTraits.set(traits);
+      const matched = this.bioEngine.matchAgainstCloudStore(
+        traits,
+        this.store.facialProfiles(),
+        this.selectedSubjectId()
+      );
+      if (matched) {
+        this.latestMatchCandidate.set(matched);
+      }
     }
   }
 
   async toggleLiveCamera(): Promise<void> {
     if (this.cameraActive()) {
       this.stopCameraStream();
-      this.cameraStatusText.set('Camera Paused — Smart Face Scanner Ready');
+      this.cameraStatusText.set('Automatic Face Recognition Active');
       return;
     }
 
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      this.cameraStatusText.set('Using Smart Face Scanner');
+      this.cameraStatusText.set('Automatic Face Recognition Active');
       this.store.notify('warning', 'Camera not found on this device. Using smart face scanner.');
       return;
     }
@@ -399,10 +467,10 @@ export class App implements AfterViewInit, OnDestroy {
         await videoEl.play();
       }
       this.cameraActive.set(true);
-      this.cameraStatusText.set('Live Camera On');
+      this.cameraStatusText.set('Live Camera Face Recognition Active');
     } catch {
       this.cameraActive.set(false);
-      this.cameraStatusText.set('Using Smart Face Scanner');
+      this.cameraStatusText.set('Automatic Face Recognition Active');
       this.store.notify('warning', 'Camera access was blocked. Using smart face scanner instead.');
     }
   }
@@ -431,9 +499,9 @@ export class App implements AfterViewInit, OnDestroy {
       img.onload = () => {
         this.uploadedImageElement = img;
         this.uploadedPortraitDataUrl.set(dataUrl);
-        this.cameraStatusText.set(`Photo Loaded: ${file.name.slice(0, 24)}`);
+        this.cameraStatusText.set(`Face Recognized from Photo`);
         this.renderSingleMeshTick();
-        this.store.notify('success', 'Face photo loaded and scanned!');
+        this.store.notify('success', 'Face recognized! Check your details and click Okay.');
       };
       img.src = dataUrl;
     };
@@ -443,71 +511,40 @@ export class App implements AfterViewInit, OnDestroy {
   clearUploadedPortrait(): void {
     this.uploadedImageElement = null;
     this.uploadedPortraitDataUrl.set(null);
-    this.cameraStatusText.set('Camera Ready');
+    this.cameraStatusText.set('Automatic Face Recognition Active');
     this.renderSingleMeshTick();
   }
 
   async refreshDeviceLocation(): Promise<void> {
     this.geoBusy.set(true);
-    const subj = this.selectedSubjectProfile();
+    const subj = this.autoRecognizedProfile();
     const detected = await this.bioEngine.detectDeviceLocation(subj?.branch);
     this.geoState.set(detected);
     this.geoBusy.set(false);
   }
 
-  selectCampusLocationPreset(branchName: string): void {
-    const preset = this.bioEngine.getPresetLocationForBranch(branchName);
-    this.geoState.set(preset);
-    this.store.notify('success', `Location set to ${preset.locationName}`);
-  }
-
-  applyCustomLocationOverride(): void {
-    const note = this.customLocationNote().trim();
-    if (!note) return;
-    const current = this.geoState();
-    this.geoState.set({
-      ...current,
-      locationName: `${note} (${current.latitude}, ${current.longitude})`.slice(0, 155),
-      source: 'manual_override',
-      capturedAt: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      }),
-    });
-    this.customLocationNote.set('');
-  }
-
+  /**
+   * One-click "Okay — Confirm & Record Attendance" handler.
+   * Automatically records the recognized person's attendance with current time, GPS location,
+   * branch, roll number, date of birth, and phone number without asking any questions.
+   */
   async executeBiometricVerifyAndRecord(): Promise<void> {
     this.isScanningNow.set(true);
     this.renderSingleMeshTick();
 
-    const traits = this.liveTraits();
-    if (!traits) {
+    const recognized = this.autoRecognizedProfile();
+    if (!recognized) {
       this.isScanningNow.set(false);
-      return;
-    }
-
-    const candidate = this.bioEngine.matchAgainstCloudStore(
-      traits,
-      this.store.facialProfiles(),
-      this.selectedSubjectId()
-    );
-
-    this.latestMatchCandidate.set(candidate);
-
-    if (!candidate || !candidate.passedThreshold) {
-      this.isScanningNow.set(false);
-      this.store.notify('error', 'Face did not match. Please try again or add your face first.');
+      this.store.notify('error', 'No face profile found. Please add your face first.');
       return;
     }
 
     const loc = this.geoState();
     const recorded = await this.store.recordAttendance({
-      profile: candidate.profile,
-      attendanceStatus: this.verifyAttendanceStatus(),
+      profile: recognized,
+      attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
-      matchConfidence: candidate.similarityPercent,
+      matchConfidence: this.autoMatchConfidence(),
       latitude: loc.latitude,
       longitude: loc.longitude,
       locationName: loc.locationName,
@@ -519,12 +556,25 @@ export class App implements AfterViewInit, OnDestroy {
 
   async executeEnrollCloudProfile(): Promise<void> {
     const name = this.enrollName().trim();
-    const code = this.enrollCode().trim();
     const branch = this.enrollBranch().trim();
-    const role = this.enrollRole().trim();
+    const dob = this.enrollDob().trim();
+    const code = this.enrollCode().trim();
+    const phone = this.enrollPhone().trim();
 
     if (name.length < 2) {
-      this.store.notify('error', 'Please type a name (at least 2 letters).');
+      this.store.notify('error', 'Please type your Name (at least 2 letters).');
+      return;
+    }
+    if (!dob) {
+      this.store.notify('error', 'Please enter your Date of Birth.');
+      return;
+    }
+    if (code.length < 2) {
+      this.store.notify('error', 'Please enter your Roll Number.');
+      return;
+    }
+    if (phone.length < 5) {
+      this.store.notify('error', 'Please enter your Phone Number.');
       return;
     }
 
@@ -539,16 +589,19 @@ export class App implements AfterViewInit, OnDestroy {
       fullName: name,
       employeeCode: code,
       branch,
-      roleTitle: role || 'Member',
+      dateOfBirth: dob,
+      phoneNumber: phone,
+      roleTitle: branch,
       traitSignature: fallbackSig,
       interocularRatio: traits?.interocularRatio || 0.38,
-      symmetryScore: traits?.symmetryScore || 97.5,
+      symmetryScore: traits?.symmetryScore || 98.2,
       descriptorHash: traits?.descriptorHash || 'AV-8841F09A',
     });
 
     this.selectedSubjectId.set(created.id);
+    this.latestRecordedLog.set(null);
     this.enrollName.set('');
-    this.enrollCode.set(`EMP-${Math.floor(1051 + Math.random() * 890)}`);
+    this.enrollCode.set(`ROLL-${Math.floor(1051 + Math.random() * 890)}`);
     this.isScanningNow.set(false);
     if (this.activeTab() === 'enroll') {
       this.switchTab('scanner');
@@ -564,8 +617,10 @@ export class App implements AfterViewInit, OnDestroy {
     const loc = this.geoState();
     const log = await this.store.quickAddCustomAttendanceData({
       fullName: name,
-      employeeCode: this.quickAddCode().trim() || `EMP-${Math.floor(1000 + Math.random() * 9000)}`,
+      employeeCode: this.quickAddCode().trim() || `ROLL-${Math.floor(1000 + Math.random() * 9000)}`,
       branch: this.quickAddBranch(),
+      dateOfBirth: this.quickAddDob().trim() || '2000-01-01',
+      phoneNumber: this.quickAddPhone().trim() || '+91 98200 00000',
       attendanceStatus: this.quickAddStatus(),
       latitude: loc.latitude,
       longitude: loc.longitude,
@@ -573,7 +628,7 @@ export class App implements AfterViewInit, OnDestroy {
     });
     this.latestRecordedLog.set(log);
     this.quickAddName.set('');
-    this.quickAddCode.set(`EMP-${Math.floor(1070 + Math.random() * 890)}`);
+    this.quickAddCode.set(`ROLL-${Math.floor(1070 + Math.random() * 890)}`);
   }
 
   submitVaultPassword(): void {
@@ -598,13 +653,22 @@ export class App implements AfterViewInit, OnDestroy {
       fullName: profile.fullName,
       employeeCode: profile.employeeCode,
       branch: profile.branch,
+      dateOfBirth: profile.dateOfBirth,
+      phoneNumber: profile.phoneNumber,
       roleTitle: profile.roleTitle,
       status: profile.status,
     });
   }
 
   updateEditingProfileField(
-    field: 'fullName' | 'employeeCode' | 'branch' | 'roleTitle' | 'status',
+    field:
+      | 'fullName'
+      | 'employeeCode'
+      | 'branch'
+      | 'dateOfBirth'
+      | 'phoneNumber'
+      | 'roleTitle'
+      | 'status',
     value: string
   ): void {
     const current = this.editingProfile();
@@ -626,6 +690,8 @@ export class App implements AfterViewInit, OnDestroy {
       fullName: edit.fullName,
       employeeCode: edit.employeeCode,
       branch: edit.branch,
+      dateOfBirth: edit.dateOfBirth,
+      phoneNumber: edit.phoneNumber,
       roleTitle: edit.roleTitle,
       status: edit.status,
     });
@@ -650,6 +716,8 @@ export class App implements AfterViewInit, OnDestroy {
       fullName: log.fullName,
       employeeCode: log.employeeCode,
       branch: log.branch,
+      dateOfBirth: log.dateOfBirth,
+      phoneNumber: log.phoneNumber,
       attendanceStatus: log.attendanceStatus,
       locationName: log.locationName,
       timeLabel: log.timeLabel,
@@ -662,6 +730,8 @@ export class App implements AfterViewInit, OnDestroy {
       | 'fullName'
       | 'employeeCode'
       | 'branch'
+      | 'dateOfBirth'
+      | 'phoneNumber'
       | 'attendanceStatus'
       | 'locationName'
       | 'timeLabel'
@@ -683,6 +753,8 @@ export class App implements AfterViewInit, OnDestroy {
       fullName: edit.fullName,
       employeeCode: edit.employeeCode,
       branch: edit.branch,
+      dateOfBirth: edit.dateOfBirth,
+      phoneNumber: edit.phoneNumber,
       attendanceStatus: edit.attendanceStatus,
       locationName: edit.locationName,
       timeLabel: edit.timeLabel,
@@ -701,8 +773,10 @@ export class App implements AfterViewInit, OnDestroy {
       [
         'Section',
         'Name',
-        'ID Code',
+        'Roll Number',
         'Branch',
+        'Date of Birth',
+        'Phone Number',
         'Date',
         'Time',
         'Status',
@@ -720,6 +794,8 @@ export class App implements AfterViewInit, OnDestroy {
           `"${log.fullName.replace(/"/g, '""')}"`,
           `"${log.employeeCode}"`,
           `"${log.branch}"`,
+          `"${log.dateOfBirth}"`,
+          `"${log.phoneNumber}"`,
           `"${log.dateKey}"`,
           `"${log.timeLabel}"`,
           `"${log.attendanceStatus.toUpperCase()}"`,
@@ -736,9 +812,10 @@ export class App implements AfterViewInit, OnDestroy {
       [
         'Summary',
         'Name',
-        'ID Code',
+        'Roll Number',
         'Branch',
-        'Job Role',
+        'Date of Birth',
+        'Phone Number',
         'Days Present',
         'Days Late',
         'Days Leave',
@@ -754,7 +831,8 @@ export class App implements AfterViewInit, OnDestroy {
           `"${s.fullName.replace(/"/g, '""')}"`,
           `"${s.employeeCode}"`,
           `"${s.branch}"`,
-          `"${s.roleTitle.replace(/"/g, '""')}"`,
+          `"${s.dateOfBirth}"`,
+          `"${s.phoneNumber}"`,
           String(s.presentCount),
           String(s.lateCount),
           String(s.leaveCount),

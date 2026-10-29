@@ -6,8 +6,10 @@ export interface FacialProfile {
   id: string;
   ownerId: string;
   fullName: string;
-  employeeCode: string;
+  employeeCode: string; // Roll Number
   branch: string;
+  dateOfBirth: string;
+  phoneNumber: string;
   roleTitle: string;
   traitSignature: string; // 32 or 64 comma-separated floats in [-1, 1]
   interocularRatio: number;
@@ -23,8 +25,10 @@ export interface AttendanceLog {
   ownerId: string;
   profileId: string;
   fullName: string;
-  employeeCode: string;
+  employeeCode: string; // Roll Number
   branch: string;
+  dateOfBirth: string;
+  phoneNumber: string;
   attendanceStatus: AttendanceStatus;
   verificationMethod: VerificationMethod;
   matchConfidence: number;
@@ -69,6 +73,8 @@ export interface MonthlyEmployeeSummary {
   fullName: string;
   employeeCode: string;
   branch: string;
+  dateOfBirth: string;
+  phoneNumber: string;
   roleTitle: string;
   presentCount: number;
   lateCount: number;
@@ -139,7 +145,7 @@ export function generateDeterministicVector(seed: number): number[] {
   let s = seed;
   for (let i = 0; i < 32; i++) {
     s = (s * 1664525 + 1013904223) % 4294967296;
-    const raw = (s / 2147483648) - 1;
+    const raw = s / 2147483648 - 1;
     vec.push(Number(raw.toFixed(4)));
   }
   const norm = Math.sqrt(vec.reduce((acc, v) => acc + v * v, 0)) || 1;
@@ -177,9 +183,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_aarav_101',
       fullName: 'Aarav Vardhan Rathore',
-      employeeCode: 'EMP-1041',
+      employeeCode: 'ROLL-1041',
       branch: 'Mumbai Royal HQ',
-      roleTitle: 'Principal Biometric Architect',
+      dateOfBirth: '1999-05-14',
+      phoneNumber: '+91 98201 44101',
+      roleTitle: 'Computer Science',
       seed: 104199,
       interocularRatio: 0.384,
       symmetryScore: 98.2,
@@ -188,9 +196,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_meera_102',
       fullName: 'Meera Deshmukh',
-      employeeCode: 'EMP-1042',
+      employeeCode: 'ROLL-1042',
       branch: 'Bangalore Tech Campus',
-      roleTitle: 'Director of Cloud Security',
+      dateOfBirth: '2001-08-22',
+      phoneNumber: '+91 98450 22102',
+      roleTitle: 'Information Technology',
       seed: 208411,
       interocularRatio: 0.371,
       symmetryScore: 97.6,
@@ -199,9 +209,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_julian_103',
       fullName: 'Julian Vance-Sterling',
-      employeeCode: 'EMP-1043',
+      employeeCode: 'ROLL-1043',
       branch: 'London Mayfair Branch',
-      roleTitle: 'VP Regional Operations',
+      dateOfBirth: '1998-11-09',
+      phoneNumber: '+44 7700 900313',
+      roleTitle: 'Robotics & AI',
       seed: 319522,
       interocularRatio: 0.392,
       symmetryScore: 96.4,
@@ -210,9 +222,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_elena_104',
       fullName: 'Elena Rostova-Chen',
-      employeeCode: 'EMP-1044',
+      employeeCode: 'ROLL-1044',
       branch: 'Singapore Marina Hub',
-      roleTitle: 'Lead Telemetry Systems Engineer',
+      dateOfBirth: '2002-02-18',
+      phoneNumber: '+65 9123 4504',
+      roleTitle: 'Data Science',
       seed: 448103,
       interocularRatio: 0.368,
       symmetryScore: 98.8,
@@ -221,9 +235,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_kabir_105',
       fullName: 'Kabir Sen-Gupta',
-      employeeCode: 'EMP-1045',
+      employeeCode: 'ROLL-1045',
       branch: 'New York Midtown',
-      roleTitle: 'Quantitative Compliance Officer',
+      dateOfBirth: '2000-07-30',
+      phoneNumber: '+1 212-555-0145',
+      roleTitle: 'Electronics',
       seed: 559214,
       interocularRatio: 0.379,
       symmetryScore: 95.9,
@@ -232,9 +248,11 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
     {
       id: 'prof_ananya_106',
       fullName: 'Ananya Chatterjee',
-      employeeCode: 'EMP-1046',
+      employeeCode: 'ROLL-1046',
       branch: 'Mumbai Royal HQ',
-      roleTitle: 'Senior Spatial UX Strategist',
+      dateOfBirth: '2003-01-12',
+      phoneNumber: '+91 98203 77106',
+      roleTitle: 'Design & Media',
       seed: 670325,
       interocularRatio: 0.375,
       symmetryScore: 97.9,
@@ -252,6 +270,8 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
       fullName: item.fullName,
       employeeCode: item.employeeCode,
       branch: item.branch,
+      dateOfBirth: item.dateOfBirth,
+      phoneNumber: item.phoneNumber,
       roleTitle: item.roleTitle,
       traitSignature: sig,
       interocularRatio: item.interocularRatio,
@@ -264,7 +284,10 @@ export function buildSeedFacialProfiles(ownerId: string): FacialProfile[] {
   });
 }
 
-export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile[]): AttendanceLog[] {
+export function buildSeedAttendanceLogs(
+  ownerId: string,
+  profiles: FacialProfile[]
+): AttendanceLog[] {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -282,8 +305,10 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_oct_1001',
       profileId: profiles[0]?.id || 'prof_aarav_101',
       fullName: 'Aarav Vardhan Rathore',
-      employeeCode: 'EMP-1041',
+      employeeCode: 'ROLL-1041',
       branch: 'Mumbai Royal HQ',
+      dateOfBirth: '1999-05-14',
+      phoneNumber: '+91 98201 44101',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 99.1,
@@ -298,8 +323,10 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_oct_1002',
       profileId: profiles[1]?.id || 'prof_meera_102',
       fullName: 'Meera Deshmukh',
-      employeeCode: 'EMP-1042',
+      employeeCode: 'ROLL-1042',
       branch: 'Bangalore Tech Campus',
+      dateOfBirth: '2001-08-22',
+      phoneNumber: '+91 98450 22102',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 98.4,
@@ -314,9 +341,11 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_oct_1003',
       profileId: profiles[2]?.id || 'prof_julian_103',
       fullName: 'Julian Vance-Sterling',
-      employeeCode: 'EMP-1043',
+      employeeCode: 'ROLL-1043',
       branch: 'London Mayfair Branch',
-      attendanceStatus: 'late',
+      dateOfBirth: '1998-11-09',
+      phoneNumber: '+44 7700 900313',
+      attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 97.2,
       latitude: 51.5107,
@@ -324,14 +353,16 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       locationName: '24 Hanover Square, Mayfair, London (51.5107, -0.1466)',
       monthKey: `${currentYear}-${currentMonth}`,
       dateKey: `${currentYear}-${currentMonth}-${todayDay}`,
-      timeLabel: '09:41:19 AM',
+      timeLabel: '09:11:19 AM',
     },
     {
       id: 'log_oct_1004',
       profileId: profiles[3]?.id || 'prof_elena_104',
       fullName: 'Elena Rostova-Chen',
-      employeeCode: 'EMP-1044',
+      employeeCode: 'ROLL-1044',
       branch: 'Singapore Marina Hub',
+      dateOfBirth: '2002-02-18',
+      phoneNumber: '+65 9123 4504',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 99.4,
@@ -346,8 +377,10 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_oct_1005',
       profileId: profiles[4]?.id || 'prof_kabir_105',
       fullName: 'Kabir Sen-Gupta',
-      employeeCode: 'EMP-1045',
+      employeeCode: 'ROLL-1045',
       branch: 'New York Midtown',
+      dateOfBirth: '2000-07-30',
+      phoneNumber: '+1 212-555-0145',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 96.8,
@@ -362,8 +395,10 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_oct_1006',
       profileId: profiles[5]?.id || 'prof_ananya_106',
       fullName: 'Ananya Chatterjee',
-      employeeCode: 'EMP-1046',
+      employeeCode: 'ROLL-1046',
       branch: 'Mumbai Royal HQ',
+      dateOfBirth: '2003-01-12',
+      phoneNumber: '+91 98203 77106',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 98.7,
@@ -378,8 +413,10 @@ export function buildSeedAttendanceLogs(ownerId: string, profiles: FacialProfile
       id: 'log_sep_1007',
       profileId: profiles[0]?.id || 'prof_aarav_101',
       fullName: 'Aarav Vardhan Rathore',
-      employeeCode: 'EMP-1041',
+      employeeCode: 'ROLL-1041',
       branch: 'Mumbai Royal HQ',
+      dateOfBirth: '1999-05-14',
+      phoneNumber: '+91 98201 44101',
       attendanceStatus: 'present',
       verificationMethod: 'facial_biometric',
       matchConfidence: 98.9,

@@ -31,8 +31,8 @@ import {
   VerificationMethod,
 } from '../models/attendance.models';
 
-const LOCAL_PROFILES_KEY = 'auravault_facial_profiles_v2';
-const LOCAL_LOGS_KEY = 'auravault_attendance_logs_v2';
+const LOCAL_PROFILES_KEY = 'auravault_facial_profiles_v3';
+const LOCAL_LOGS_KEY = 'auravault_attendance_logs_v3';
 const WORKSPACE_OWNER_ID = 'shared_workspace';
 
 @Injectable({
@@ -84,7 +84,11 @@ export class AttendanceStoreService {
       if (savedProfiles && savedLogs) {
         const parsedProfiles = JSON.parse(savedProfiles) as FacialProfile[];
         const parsedLogs = JSON.parse(savedLogs) as AttendanceLog[];
-        if (Array.isArray(parsedProfiles) && Array.isArray(parsedLogs) && parsedProfiles.length > 0) {
+        if (
+          Array.isArray(parsedProfiles) &&
+          Array.isArray(parsedLogs) &&
+          parsedProfiles.length > 0
+        ) {
           this.facialProfiles.set(parsedProfiles);
           this.attendanceLogs.set(parsedLogs);
           return;
@@ -141,7 +145,9 @@ export class AttendanceStoreService {
             fullName: String(d['fullName'] || ''),
             employeeCode: String(d['employeeCode'] || ''),
             branch: String(d['branch'] || ''),
-            roleTitle: String(d['roleTitle'] || ''),
+            dateOfBirth: String(d['dateOfBirth'] || '2000-01-01'),
+            phoneNumber: String(d['phoneNumber'] || '+91 98200 00000'),
+            roleTitle: String(d['roleTitle'] || 'Member'),
             traitSignature: String(d['traitSignature'] || ''),
             interocularRatio: Number(d['interocularRatio'] || 0.38),
             symmetryScore: Number(d['symmetryScore'] || 96),
@@ -187,6 +193,8 @@ export class AttendanceStoreService {
             fullName: String(d['fullName'] || ''),
             employeeCode: String(d['employeeCode'] || ''),
             branch: String(d['branch'] || ''),
+            dateOfBirth: String(d['dateOfBirth'] || '2000-01-01'),
+            phoneNumber: String(d['phoneNumber'] || '+91 98200 00000'),
             attendanceStatus: (d['attendanceStatus'] as AttendanceStatus) || 'present',
             verificationMethod:
               (d['verificationMethod'] as VerificationMethod) || 'facial_biometric',
@@ -239,6 +247,8 @@ export class AttendanceStoreService {
           fullName: p.fullName.slice(0, 80),
           employeeCode: this.sanitizeCode(p.employeeCode),
           branch: p.branch.slice(0, 60),
+          dateOfBirth: p.dateOfBirth.slice(0, 30),
+          phoneNumber: p.phoneNumber.slice(0, 30),
           roleTitle: p.roleTitle.slice(0, 60),
           traitSignature: p.traitSignature.slice(0, 2048),
           interocularRatio: Number(Math.max(0.05, Math.min(1.0, p.interocularRatio)).toFixed(4)),
@@ -258,6 +268,8 @@ export class AttendanceStoreService {
           fullName: l.fullName.slice(0, 80),
           employeeCode: this.sanitizeCode(l.employeeCode),
           branch: l.branch.slice(0, 60),
+          dateOfBirth: l.dateOfBirth.slice(0, 30),
+          phoneNumber: l.phoneNumber.slice(0, 30),
           attendanceStatus: l.attendanceStatus,
           verificationMethod: l.verificationMethod,
           matchConfidence: Number(Math.max(0, Math.min(100, l.matchConfidence)).toFixed(1)),
@@ -303,7 +315,9 @@ export class AttendanceStoreService {
     fullName: string;
     employeeCode: string;
     branch: string;
-    roleTitle: string;
+    dateOfBirth: string;
+    phoneNumber: string;
+    roleTitle?: string;
     traitSignature: string;
     interocularRatio: number;
     symmetryScore: number;
@@ -318,7 +332,9 @@ export class AttendanceStoreService {
       fullName: input.fullName.trim().slice(0, 80),
       employeeCode: this.sanitizeCode(input.employeeCode),
       branch: input.branch.trim().slice(0, 60),
-      roleTitle: (input.roleTitle.trim() || 'Member').slice(0, 60),
+      dateOfBirth: (input.dateOfBirth.trim() || '2000-01-01').slice(0, 30),
+      phoneNumber: (input.phoneNumber.trim() || '+91 98200 00000').slice(0, 30),
+      roleTitle: ((input.roleTitle || input.branch).trim() || 'Member').slice(0, 60),
       traitSignature: input.traitSignature.slice(0, 2048),
       interocularRatio: Number(Math.max(0.05, Math.min(1.0, input.interocularRatio)).toFixed(4)),
       symmetryScore: Number(Math.max(0, Math.min(100, input.symmetryScore)).toFixed(1)),
@@ -338,6 +354,8 @@ export class AttendanceStoreService {
         fullName: newProfile.fullName,
         employeeCode: newProfile.employeeCode,
         branch: newProfile.branch,
+        dateOfBirth: newProfile.dateOfBirth,
+        phoneNumber: newProfile.phoneNumber,
         roleTitle: newProfile.roleTitle,
         traitSignature: newProfile.traitSignature,
         interocularRatio: newProfile.interocularRatio,
@@ -351,7 +369,7 @@ export class AttendanceStoreService {
       handleFirestoreError(error, OperationType.CREATE, `facialProfiles/${docId}`);
     }
 
-    this.notify('success', `Saved ${newProfile.fullName}'s face to Firebase!`);
+    this.notify('success', `Saved ${newProfile.fullName}'s face and details! Now just look at the camera and press Okay.`);
     return newProfile;
   }
 
@@ -359,6 +377,8 @@ export class AttendanceStoreService {
     fullName: string;
     employeeCode: string;
     branch: string;
+    dateOfBirth: string;
+    phoneNumber: string;
     attendanceStatus: AttendanceStatus;
     latitude: number;
     longitude: number;
@@ -378,6 +398,8 @@ export class AttendanceStoreService {
         fullName: cleanName,
         employeeCode: input.employeeCode,
         branch: input.branch,
+        dateOfBirth: input.dateOfBirth,
+        phoneNumber: input.phoneNumber,
         roleTitle: 'Member',
         traitSignature: sig,
         interocularRatio: 0.378,
@@ -429,6 +451,8 @@ export class AttendanceStoreService {
       fullName: input.profile.fullName.slice(0, 80),
       employeeCode: this.sanitizeCode(input.profile.employeeCode),
       branch: input.profile.branch.slice(0, 60),
+      dateOfBirth: (input.profile.dateOfBirth || '2000-01-01').slice(0, 30),
+      phoneNumber: (input.profile.phoneNumber || '+91 98200 00000').slice(0, 30),
       attendanceStatus: input.attendanceStatus,
       verificationMethod: input.verificationMethod,
       matchConfidence: Number(Math.max(0, Math.min(100, input.matchConfidence)).toFixed(1)),
@@ -453,6 +477,8 @@ export class AttendanceStoreService {
         fullName: newLog.fullName,
         employeeCode: newLog.employeeCode,
         branch: newLog.branch,
+        dateOfBirth: newLog.dateOfBirth,
+        phoneNumber: newLog.phoneNumber,
         attendanceStatus: newLog.attendanceStatus,
         verificationMethod: newLog.verificationMethod,
         matchConfidence: newLog.matchConfidence,
@@ -471,7 +497,7 @@ export class AttendanceStoreService {
 
     this.notify(
       'success',
-      `Attendance marked for ${newLog.fullName} (${newLog.branch}) at ${newLog.timeLabel}!`
+      `Attendance recorded for ${newLog.fullName} (Roll: ${newLog.employeeCode}) at ${newLog.timeLabel}!`
     );
     return newLog;
   }
@@ -482,6 +508,8 @@ export class AttendanceStoreService {
       fullName: string;
       employeeCode: string;
       branch: string;
+      dateOfBirth: string;
+      phoneNumber: string;
       roleTitle: string;
       status: ProfileStatus;
     }
@@ -489,7 +517,9 @@ export class AttendanceStoreService {
     const safeFullName = changes.fullName.trim().slice(0, 80);
     const safeCode = this.sanitizeCode(changes.employeeCode);
     const safeBranch = changes.branch.trim().slice(0, 60);
-    const safeRole = changes.roleTitle.trim().slice(0, 60);
+    const safeDob = (changes.dateOfBirth.trim() || '2000-01-01').slice(0, 30);
+    const safePhone = (changes.phoneNumber.trim() || '+91 98200 00000').slice(0, 30);
+    const safeRole = (changes.roleTitle.trim() || safeBranch).slice(0, 60);
 
     const updated = this.facialProfiles().map((p) =>
       p.id === profileId
@@ -498,6 +528,8 @@ export class AttendanceStoreService {
             fullName: safeFullName,
             employeeCode: safeCode,
             branch: safeBranch,
+            dateOfBirth: safeDob,
+            phoneNumber: safePhone,
             roleTitle: safeRole,
             status: changes.status,
             updatedAtIso: new Date().toISOString(),
@@ -512,6 +544,8 @@ export class AttendanceStoreService {
         fullName: safeFullName,
         employeeCode: safeCode,
         branch: safeBranch,
+        dateOfBirth: safeDob,
+        phoneNumber: safePhone,
         roleTitle: safeRole,
         status: changes.status,
         updatedAt: serverTimestamp(),
@@ -583,6 +617,8 @@ export class AttendanceStoreService {
       fullName: string;
       employeeCode: string;
       branch: string;
+      dateOfBirth: string;
+      phoneNumber: string;
       attendanceStatus: AttendanceStatus;
       locationName: string;
       timeLabel: string;
@@ -592,6 +628,8 @@ export class AttendanceStoreService {
     const safeName = changes.fullName.trim().slice(0, 80);
     const safeCode = this.sanitizeCode(changes.employeeCode);
     const safeBranch = changes.branch.trim().slice(0, 60);
+    const safeDob = (changes.dateOfBirth.trim() || '2000-01-01').slice(0, 30);
+    const safePhone = (changes.phoneNumber.trim() || '+91 98200 00000').slice(0, 30);
     const safeLoc = changes.locationName.trim().slice(0, 160);
     const safeTime = changes.timeLabel.trim().slice(0, 20);
     const safeDate = /^\d{4}-\d{2}-\d{2}$/.test(changes.dateKey)
@@ -606,6 +644,8 @@ export class AttendanceStoreService {
             fullName: safeName,
             employeeCode: safeCode,
             branch: safeBranch,
+            dateOfBirth: safeDob,
+            phoneNumber: safePhone,
             attendanceStatus: changes.attendanceStatus,
             locationName: safeLoc,
             timeLabel: safeTime,
@@ -623,6 +663,8 @@ export class AttendanceStoreService {
         fullName: safeName,
         employeeCode: safeCode,
         branch: safeBranch,
+        dateOfBirth: safeDob,
+        phoneNumber: safePhone,
         attendanceStatus: changes.attendanceStatus,
         locationName: safeLoc,
         timeLabel: safeTime,
@@ -691,6 +733,8 @@ export class AttendanceStoreService {
         fullName: prof.fullName,
         employeeCode: prof.employeeCode,
         branch: prof.branch,
+        dateOfBirth: prof.dateOfBirth,
+        phoneNumber: prof.phoneNumber,
         roleTitle: prof.roleTitle,
         presentCount,
         lateCount,
@@ -720,7 +764,7 @@ export class AttendanceStoreService {
 
   private sanitizeCode(raw: string): string {
     const cleaned = raw.trim().replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 32);
-    return cleaned.length >= 2 ? cleaned : `ID-${Date.now().toString().slice(-4)}`;
+    return cleaned.length >= 2 ? cleaned : `ROLL-${Date.now().toString().slice(-4)}`;
   }
 }
 

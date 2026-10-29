@@ -53,14 +53,17 @@ service cloud.firestore {
         ]) &&
         data.keys().hasOnly([
           'ownerId', 'fullName', 'employeeCode', 'branch', 'roleTitle',
+          'dateOfBirth', 'phoneNumber',
           'traitSignature', 'interocularRatio', 'symmetryScore',
           'descriptorHash', 'status', 'createdAt', 'updatedAt'
         ]) &&
         data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
         data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 80 &&
-        data.employeeCode is string && data.employeeCode.size() >= 2 && data.employeeCode.size() <= 32 && data.employeeCode.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.employeeCode is string && data.employeeCode.size() >= 1 && data.employeeCode.size() <= 32 && data.employeeCode.matches('^[a-zA-Z0-9_\\-]+$') &&
         data.branch is string && data.branch.size() >= 2 && data.branch.size() <= 60 &&
         data.roleTitle is string && data.roleTitle.size() >= 2 && data.roleTitle.size() <= 60 &&
+        (!('dateOfBirth' in data) || (data.dateOfBirth is string && data.dateOfBirth.size() <= 40)) &&
+        (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() <= 40)) &&
         data.traitSignature is string && data.traitSignature.size() >= 16 && data.traitSignature.size() <= 2048 &&
         (data.interocularRatio is number || data.interocularRatio is int || data.interocularRatio is float) &&
         data.interocularRatio >= 0.05 && data.interocularRatio <= 1.0 &&
@@ -81,6 +84,7 @@ service cloud.firestore {
         ]) &&
         data.keys().hasOnly([
           'ownerId', 'profileId', 'fullName', 'employeeCode', 'branch',
+          'dateOfBirth', 'phoneNumber',
           'attendanceStatus', 'verificationMethod', 'matchConfidence',
           'latitude', 'longitude', 'locationName', 'monthKey', 'dateKey',
           'timeLabel', 'createdAt', 'updatedAt'
@@ -88,8 +92,10 @@ service cloud.firestore {
         data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 && data.ownerId.matches('^[a-zA-Z0-9_\\-]+$') &&
         data.profileId is string && data.profileId.size() >= 1 && data.profileId.size() <= 128 && data.profileId.matches('^[a-zA-Z0-9_\\-]+$') &&
         data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 80 &&
-        data.employeeCode is string && data.employeeCode.size() >= 2 && data.employeeCode.size() <= 32 && data.employeeCode.matches('^[a-zA-Z0-9_\\-]+$') &&
+        data.employeeCode is string && data.employeeCode.size() >= 1 && data.employeeCode.size() <= 32 && data.employeeCode.matches('^[a-zA-Z0-9_\\-]+$') &&
         data.branch is string && data.branch.size() >= 2 && data.branch.size() <= 60 &&
+        (!('dateOfBirth' in data) || (data.dateOfBirth is string && data.dateOfBirth.size() <= 40)) &&
+        (!('phoneNumber' in data) || (data.phoneNumber is string && data.phoneNumber.size() <= 40)) &&
         data.attendanceStatus is string && data.attendanceStatus.size() <= 20 && data.attendanceStatus in ['present', 'late', 'on_leave', 'revoked'] &&
         data.verificationMethod is string && data.verificationMethod.size() <= 30 && data.verificationMethod in ['facial_biometric', 'manual_admin_override'] &&
         (data.matchConfidence is number || data.matchConfidence is int || data.matchConfidence is float) &&
@@ -139,7 +145,7 @@ service cloud.firestore {
           (
             isAllowedWorkspaceOwner(existing().ownerId) &&
             incoming().diff(existing()).affectedKeys().hasOnly([
-              'fullName', 'employeeCode', 'branch', 'roleTitle', 'status', 'updatedAt'
+              'fullName', 'employeeCode', 'branch', 'roleTitle', 'dateOfBirth', 'phoneNumber', 'status', 'updatedAt'
             ])
           ) ||
           (
@@ -181,8 +187,8 @@ service cloud.firestore {
           (
             isAllowedWorkspaceOwner(existing().ownerId) &&
             incoming().diff(existing()).affectedKeys().hasOnly([
-              'fullName', 'employeeCode', 'branch', 'attendanceStatus',
-              'locationName', 'timeLabel', 'dateKey', 'monthKey', 'updatedAt'
+              'fullName', 'employeeCode', 'branch', 'dateOfBirth', 'phoneNumber',
+              'attendanceStatus', 'locationName', 'timeLabel', 'dateKey', 'monthKey', 'updatedAt'
             ])
           )
         );

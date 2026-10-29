@@ -49,6 +49,36 @@ body {
   transition: background-color 180ms cubic-bezier(0.16, 1, 0.3, 1), color 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Floating & Pop-Up Interactive Look for All Buttons and Upload Triggers */
+button,
+.btn-floating {
+  cursor: pointer;
+  will-change: transform, filter;
+  filter: drop-shadow(0 3px 6px rgba(30, 25, 27, 0.08));
+  transition:
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 180ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 160ms ease,
+    opacity 160ms ease;
+}
+
+button:hover:not(:disabled),
+.btn-floating:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: drop-shadow(0 10px 18px rgba(94, 25, 40, 0.22));
+}
+
+button:active:not(:disabled),
+.btn-floating:active {
+  transform: translateY(1px) scale(0.96);
+  filter: drop-shadow(0 2px 4px rgba(30, 25, 27, 0.14));
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .font-display {
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
